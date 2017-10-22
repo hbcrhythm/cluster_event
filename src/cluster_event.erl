@@ -7,7 +7,7 @@
 
 -behaviour(gen_server).
 
--export([start_link/0, start_link/1, init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
+-export([start_link/0, start_link/1, stop/0, stop/1, init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 -export([add/3, add/4, del/2, del/3, trigger/2, trigger/3]).
 
 -include("cluster_event.hrl").
@@ -42,6 +42,11 @@ trigger(Name, Id) ->
 	trigger(Name, Id, []).
 trigger(Name, Id, ExtraParams) ->
 	Name ! {trigger, Id, ExtraParams}.
+
+stop() ->
+	?MODULE ! stop.
+stop(Name) ->
+	Name ! stop.
 
 start_link() ->
 	gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
@@ -118,6 +123,9 @@ handle_info({trigger, Id, ExtraParams}, State = #state{events = Events}) ->
 			NewEvents = gb_trees:enter(Id, NewCallBackList, Events),
 			{noreply, State#state{events = NewEvents}}
 	end;
+
+handle_info(stop, State) ->
+	{stop, normal, State};
 
 handle_info(_Info, State) ->
     {noreply, State}.
