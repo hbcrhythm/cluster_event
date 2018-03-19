@@ -122,7 +122,7 @@ do(DictName, {trigger, Id, ExtraParams}) ->
 						end,
 						case ApplyResult of
 							{'EXIT', Reason} -> 
-								lager:info("cluster event callback [M]:~w, [F]:~w, [A]:~w fail, reason ~w",[M, F, A, Reason]);
+								lager:info("cluster event callback [M]:~p, [F]:~p, [A]:~p fail, reason ~p",[M, F, A, Reason]);
 							_ ->
 								ignore
 						end,
