@@ -51,3 +51,5 @@ event2_trigger(Name, Id) ->
 	cluster_event2:trigger(Name, Id).
 event2_trigger(Name, Id, ExtraParams) ->
 	cluster_event2:trigger(Name, Id, ExtraParams).
+event2_trigger(Name, Id, ExtraParams, ExtState) ->
+	cluster_event2:trigger(Name, Id, ExtraParams, ExtState).

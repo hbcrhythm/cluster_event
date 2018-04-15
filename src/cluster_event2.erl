@@ -4,7 +4,7 @@
 %% @end
 %%%-------------------------------------------------------------------
 -module(cluster_event2).
--export([init/1, add/3, add/4, del/2, del/3, trigger/2, trigger/3]).
+-export([init/1, add/3, add/4, del/2, del/3, trigger/2, trigger/3, trigger/4]).
 
 -include("cluster_event.hrl").
 
@@ -43,7 +43,8 @@ trigger(DictName, Id) ->
 	trigger(DictName, Id, []).
 trigger(DictName, Id, ExtraParams) ->
 	do(DictName, {trigger, Id, ExtraParams}).
-
+trigger(DictName, Id, ExtraParams, ExtState) ->
+	do(DictName, {trigger2, Id, ExtraParams, ExtState}).
 
 do(DictName, {add, Id, CallBack}) ->
 	case get(DictName) of
@@ -133,5 +134,44 @@ do(DictName, {trigger, Id, ExtraParams}) ->
 					NewState = State#state{events = NewEvents},
 					put(DictName, NewState),
 					ok
+			end
+	end;
+
+%% @doc 保留状态触发。ApplyResult 必须返回新状态。
+do(DictName, {trigger2, Id, ExtraParams, ExtState}) ->
+	case get(DictName) of
+		undefined ->
+			{error, not_init_dict};
+		State = #state{events = Events} ->		
+			case gb_trees:lookup(Id, Events) of
+				none ->
+					{ok, ExtState};
+				{value, CallBackList} ->
+					F = fun(CallBack = #cluster_event_callback{m = M, f = F, a = A, is_once = IsOnce}, {CallbackListAcc, ExtStateAcc}) ->
+						ApplyResult = case M of
+							undefined ->
+								catch erlang:apply(F, ExtraParams ++ A ++ ExtStateAcc);
+							_ ->
+								catch erlang:apply(M, F, ExtraParams ++ A ++ ExtStateAcc)
+						end,
+						ExtStateAcc2 = case ApplyResult of
+							{'EXIT', Reason} -> 
+								lager:info("cluster event callback [M]:~p, [F]:~p, [A]:~p fail, reason ~p erlang:get_stacktrace() ~p",[M, F, A, Reason, erlang:get_stacktrace()]),
+								ExtStateAcc;
+							_ ->
+								ApplyResult
+						end,
+						case IsOnce of
+							false ->
+								{[CallBack | CallbackListAcc], ExtStateAcc2};
+							true ->
+								{CallbackListAcc, ExtStateAcc2}
+						end
+					end,
+					{NewCallBackList, ExtState2} = lists:foldl(F, {[], ExtState}, CallBackList),
+					NewEvents = gb_trees:enter(Id, NewCallBackList, Events),
+					NewState = State#state{events = NewEvents},
+					put(DictName, NewState),
+					ExtState2
 			end
 	end.
