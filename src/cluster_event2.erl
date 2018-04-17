@@ -32,7 +32,7 @@ add(_, _Id, _, _) ->
 del(DictName, Id) ->
 	do(DictName, {del, Id}).
 
-del(DictName, Id, {Callback_F, Callback_A}) ) ->
+del(DictName, Id, {Callback_F, Callback_A} ) ->
 	del(DictName, Id, {undefined, Callback_F, Callback_A});
 del(DictName, Id, {CallBack_M, Callback_F, Callback_A}) ->
 	do(DictName, {del, Id, #cluster_event_callback{m = CallBack_M, f = Callback_F, a = Callback_A} });
