@@ -17,24 +17,24 @@ init(DictName) when is_atom(DictName) ->
 init(_) ->
 	{error, dictname_is_not_atom}.
 
-add(DictName, Id, {Callback_F, Callback_A}) when is_atom(Id) ->
+add(DictName, Id, {Callback_F, Callback_A}) ->
 	do(DictName, {add, Id, #cluster_event_callback{m = undefined, f = Callback_F, a = Callback_A, is_once = false} });
-add(DictName, Id, {CallBack_M, Callback_F, Callback_A}) when is_atom(Id) ->
+add(DictName, Id, {CallBack_M, Callback_F, Callback_A}) ->
 	do(DictName, {add, Id, #cluster_event_callback{m = CallBack_M, f = Callback_F, a = Callback_A, is_once = false} }).
-add(DictName, Id, {Callback_F, Callback_A}, IsOnce) when is_atom(Id) ->
+add(DictName, Id, {Callback_F, Callback_A}, IsOnce) ->
 	add(DictName, Id, {undefined, Callback_F, Callback_A}, IsOnce);
-add(DictName, Id, {CallBack_M, Callback_F, Callback_A}, IsOnce) when is_atom(Id) ->
+add(DictName, Id, {CallBack_M, Callback_F, Callback_A}, IsOnce) ->
 	do(DictName, {add, Id, #cluster_event_callback{m = CallBack_M, f = Callback_F, a = Callback_A, is_once = IsOnce} });
 add(_, _Id, _, _) ->
 	{error, id_is_not_atom}.
 
 
-del(DictName, Id) when is_atom(Id) ->
+del(DictName, Id) ->
 	do(DictName, {del, Id}).
 
-del(DictName, Id, {Callback_F, Callback_A}) when is_atom(Id) ->
+del(DictName, Id, {Callback_F, Callback_A}) ) ->
 	del(DictName, Id, {undefined, Callback_F, Callback_A});
-del(DictName, Id, {CallBack_M, Callback_F, Callback_A}) when is_atom(Id) ->
+del(DictName, Id, {CallBack_M, Callback_F, Callback_A}) ->
 	do(DictName, {del, Id, #cluster_event_callback{m = CallBack_M, f = Callback_F, a = Callback_A} });
 del(_DictName, _Id, _) ->
 	{error, id_is_not_atom}.

@@ -16,24 +16,24 @@
 		events = gb_trees:empty()
 	}).
 
-add(Name, Id, {Callback_F, Callback_A}) when is_atom(Id) ->
+add(Name, Id, {Callback_F, Callback_A}) ->
 	add(Name, Id, {Callback_F, Callback_A}, false);
-add(Name, Id, {CallBack_M, Callback_F, Callback_A}) when is_atom(Id) ->
+add(Name, Id, {CallBack_M, Callback_F, Callback_A})  ->
 	add(Name, Id, {CallBack_M, Callback_F, Callback_A}, false).
-add(Name, Id, {Callback_F, Callback_A}, IsOnce) when is_atom(Id) ->
+add(Name, Id, {Callback_F, Callback_A}, IsOnce)  ->
 	add(Name, Id, {undefined, Callback_F, Callback_A}, IsOnce);
-add(Name, Id, {CallBack_M, Callback_F, Callback_A}, IsOnce) when is_atom(Id) ->
+add(Name, Id, {CallBack_M, Callback_F, Callback_A}, IsOnce) ->
 	Name ! {add, Id, #cluster_event_callback{m = CallBack_M, f = Callback_F, a = Callback_A, is_once = IsOnce} };
 add(_, _Id, _, _) ->
 	{error, id_is_not_atom}.
 
 
-del(Name, Id) when is_atom(Id) ->
+del(Name, Id) ->
 	Name ! {del, Id}.
 
-del(Name, Id, {Callback_F, Callback_A}) when is_atom(Id) ->
+del(Name, Id, {Callback_F, Callback_A}) ->
 	del(Name, Id, {undefined, Callback_F, Callback_A});
-del(Name, Id, {CallBack_M, Callback_F, Callback_A}) when is_atom(Id) ->
+del(Name, Id, {CallBack_M, Callback_F, Callback_A}) ->
 	Name ! {del, Id, #cluster_event_callback{m = CallBack_M, f = Callback_F, a = Callback_A} };
 del(_, _Id, _) ->
 	{error, id_is_not_atom}.
