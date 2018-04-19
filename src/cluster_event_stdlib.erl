@@ -6,7 +6,7 @@
 -module(cluster_event_stdlib).
 
 -export([start_link/0, start_link/1, stop/0, stop/1, event_add/3, event_add/4, event_del/2, event_del/3, event_trigger/2, event_trigger/3]).
--export([init/1, event2_add/3, event2_add/4, event2_del/2, event2_del/3, event2_trigger/2, event2_trigger/3]).
+-export([init/1, event2_add/3, event2_add/4, event2_del/2, event2_del/3, event2_trigger/2, event2_trigger/3, event2_trigger/4]).
 
 start_link() ->
 	cluster_event:start_link().
