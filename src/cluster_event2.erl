@@ -123,7 +123,7 @@ do(DictName, {trigger, Id, ExtraParams}) ->
 						end,
 						case ApplyResult of
 							{'EXIT', Reason} -> 
-								lager:info("cluster event callback [M]:~p, [F]:~p, [A]:~p fail, reason ~p",[M, F, A, Reason]);
+								lager:error("cluster event callback [M]:~p, [F]:~p, [A]:~p fail, reason ~p",[M, F, A, Reason]);
 							_ ->
 								ignore
 						end,
@@ -156,7 +156,7 @@ do(DictName, {trigger2, Id, ExtraParams, ExtState}) ->
 						end,
 						ExtStateAcc2 = case ApplyResult of
 							{'EXIT', Reason} -> 
-								lager:info("cluster event callback [M]:~p, [F]:~p, [A]:~p fail, reason ~p erlang:get_stacktrace() ~p",[M, F, A, Reason, erlang:get_stacktrace()]),
+								lager:error("cluster event callback [M]:~p, [F]:~p, [A]:~p fail, reason ~p erlang:get_stacktrace() ~p",[M, F, A, Reason, erlang:get_stacktrace()]),
 								ExtStateAcc;
 							_ ->
 								ApplyResult
