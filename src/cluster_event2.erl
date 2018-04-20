@@ -150,9 +150,9 @@ do(DictName, {trigger2, Id, ExtraParams, ExtState}) ->
 					F = fun(CallBack = #cluster_event_callback{m = M, f = F, a = A, is_once = IsOnce}, {CallbackListAcc, ExtStateAcc}) ->
 						ApplyResult = case M of
 							undefined ->
-								catch erlang:apply(F, ExtraParams ++ A ++ ExtStateAcc);
+								catch erlang:apply(F, ExtraParams ++ A ++ [ExtStateAcc]);
 							_ ->
-								catch erlang:apply(M, F, ExtraParams ++ A ++ ExtStateAcc)
+								catch erlang:apply(M, F, ExtraParams ++ A ++ [ExtStateAcc])
 						end,
 						ExtStateAcc2 = case ApplyResult of
 							{'EXIT', Reason} -> 
