@@ -145,7 +145,7 @@ do(DictName, {trigger2, Id, ExtraParams, ExtState}) ->
 		State = #state{events = Events} ->		
 			case gb_trees:lookup(Id, Events) of
 				none ->
-					{ok, ExtState};
+					ExtState;
 				{value, CallBackList} ->
 					F = fun(CallBack = #cluster_event_callback{m = M, f = F, a = A, is_once = IsOnce}, {CallbackListAcc, ExtStateAcc}) ->
 						ApplyResult = case M of
